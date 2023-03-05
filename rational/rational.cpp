@@ -11,11 +11,11 @@ int64_t GCD(int64_t a, int64_t b) {
 class RationalDivisionByZero : public std::exception {};
 
 class Rational {
-private:
+ private:
   int64_t p_;
   int64_t q_;
 
-public:
+ public:
   Rational(int64_t p = 0, int64_t q = 1) {  //  NOLINT
     p_ = p;
     SetDenominator(q);
@@ -36,7 +36,7 @@ public:
   }
   void SetDenominator(int64_t q) {
     if (q == 0) {
-      throw RationalDivisionByZero{};
+      throw RationalDivisionByZero();
     }
     q_ = q;
     Reduce();
@@ -179,6 +179,8 @@ std::istream& operator>>(std::istream& is, Rational& val) {
   for (i = 0; i < len; ++i) {
     if (s[i] == '-') {
       f = !f;
+    } else if (s[i] == '+') {
+      continue;
     } else if (s[i] != '/') {
       a = a * 10 + s[i] - '0';
     } else {
@@ -192,7 +194,7 @@ std::istream& operator>>(std::istream& is, Rational& val) {
   for (; i < len; ++i) {
     if (s[i] == '-') {
       f = !f;
-    } else {
+    } else if (s[i] != '+') {
       b = b * 10 + s[i] - '0';
     }
   }
