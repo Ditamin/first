@@ -1,78 +1,76 @@
 #include <iostream>
 #include <cstring>
+#include "rational.h"
 
-int64_t GCD(int64_t a, int64_t b) {
+int GCD(int a, int b) {
   if (a == 0) {
     return b;
   }
   return GCD(b % a, a);
 }
 
-class RationalDivisionByZero : public std::exception {};
-
-class Rational {
- private:
-  int64_t p_;
-  int64_t q_;
-
- public:
-  Rational(int64_t p = 0, int64_t q = 1) {  //  NOLINT
+Rational::Rational(int p = 0, int q = 1) {  //  NOLINT
     p_ = p;
-    SetDenominator(q);
-  }
-  Rational(const Rational& other) {
-    p_ = other.p_;
-    q_ = other.q_;
-  }
-  int64_t GetNumerator() const {
-    return p_;
-  }
-  void SetNumerator(int64_t p) {
-    p_ = p;
-    Reduce();
-  }
-  int64_t GetDenominator() const {
-    return q_;
-  }
-  void SetDenominator(int64_t q) {
-    if (q == 0) {
-      throw RationalDivisionByZero();
-    }
     q_ = q;
     Reduce();
+}
+
+Rational::Rational(const Rational& other) {
+    p_ = other.p_;
+    q_ = other.q_;
+}
+
+int Rational::GetNumerator() const {
+    return p_;
+}
+
+int Rational::GetDenominator() const {
+    return q_;
+}
+
+void Rational::SetNumerator(int p) {
+    p_ = p;
+    Reduce();
+}
+
+void Rational::SetDenominator(int q) {
+  if (q == 0) {
+    throw RationalDivisionByZero();
+   }
+
+  q_ = q;
+  Reduce();
+}
+
+void Rational::Reduce() {
+  if (q_ < 0) {
+    q_ = -q_;
+    p_ = -p_;
   }
-  void Reduce() {
-    if (q_ < 0) {
-      q_ = -q_;
-      p_ = -p_;
-    }
-    int gcd = abs(GCD(p_, q_));
-    p_ /= gcd;
-    q_ /= gcd;
-  }
-};
+
+  int gcd = abs(GCD(p_, q_));
+  p_ /= gcd;
+  q_ /= gcd;
+}
 
 Rational& operator+=(Rational& first, const Rational& second) {
-  int64_t p = first.GetNumerator(), q = first.GetDenominator();
   first.SetDenominator(1);
-  first.SetNumerator(p * second.GetDenominator() + q * second.GetNumerator());
-  first.SetDenominator(q * second.GetDenominator());
+  first.SetNumerator(first.GetNumerator() * second.GetDenominator() + first.GetDenominator() * second.GetNumerator());
+  first.SetDenominator(first.GetDenominator() * second.GetDenominator());
   return first;
 }
 
 Rational& operator-=(Rational& first, const Rational& second) {
-  int64_t p = first.GetNumerator(), q = first.GetDenominator();
   first.SetDenominator(1);
-  first.SetNumerator(p * second.GetDenominator() - q * second.GetNumerator());
-  first.SetDenominator(q * second.GetDenominator());
+  first.SetNumerator(first.GetNumerator() * second.GetDenominator() - first.GetDenominator() * second.GetNumerator());
+  first.SetDenominator(first.GetDenominator() * second.GetDenominator());
   return first;
 }
 
 Rational& operator*=(Rational& first, const Rational& second) {
-  int64_t p = first.GetNumerator(), q = first.GetDenominator();
   first.SetDenominator(1);
-  first.SetNumerator(p * second.GetNumerator());
-  first.SetDenominator(q * second.GetDenominator());
+  first.SetNumerator(first.GetNumerator() * second.GetNumerator());
+  first.SetDenominator(first.GetDenominator() * second.GetDenominator());
   return first;
 }
 
@@ -80,10 +78,10 @@ Rational& operator/=(Rational& first, const Rational& second) {
   if (second.GetNumerator() == 0) {
     throw RationalDivisionByZero();
   }
-  int64_t p = first.GetNumerator(), q = first.GetDenominator();
+
   first.SetDenominator(1);
-  first.SetNumerator(p * second.GetDenominator());
-  first.SetDenominator(q * second.GetNumerator());
+  first.SetNumerator(first.GetNumerator() * second.GetDenominator());
+  first.SetDenominator(first.GetDenominator() * second.GetNumerator());
   return first;
 }
 
@@ -141,6 +139,7 @@ Rational operator/(const Rational& first, const Rational& second) {
   if (second.GetNumerator() == 0) {
     throw RationalDivisionByZero();
   }
+
   Rational res;
   res.SetNumerator(first.GetNumerator() * second.GetDenominator());
   res.SetDenominator(first.GetDenominator() * second.GetNumerator());
@@ -175,7 +174,8 @@ std::istream& operator>>(std::istream& is, Rational& val) {
   bool f = false;
   char s[50];
   is >> s;
-  int64_t a = 0, b = 0, len = strlen(s), i;
+  int a = 0, b = 0, len = strlen(s), i;
+
   for (i = 0; i < len; ++i) {
     if (s[i] == '-') {
       f = !f;
@@ -188,9 +188,11 @@ std::istream& operator>>(std::istream& is, Rational& val) {
       break;
     }
   }
+
   if (len == i) {
     b = 1;
   }
+
   for (; i < len; ++i) {
     if (s[i] == '-') {
       f = !f;
@@ -198,9 +200,11 @@ std::istream& operator>>(std::istream& is, Rational& val) {
       b = b * 10 + s[i] - '0';
     }
   }
+
   if (f) {
     a = -a;
   }
+
   val.SetDenominator(1);
   val.SetNumerator(a);
   val.SetDenominator(b);
@@ -213,5 +217,6 @@ std::ostream& operator<<(std::ostream& os, const Rational& val) {
   } else {
     os << val.GetNumerator() << "/" << val.GetDenominator();
   }
+
   return os;
 }
