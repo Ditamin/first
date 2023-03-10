@@ -54,38 +54,22 @@ void Rational::Reduce() {
 }
 
 Rational& operator+=(Rational& first, const Rational& second) {
-  Rational res;
-  res.SetNumerator(first.GetNumerator() * second.GetDenominator() + first.GetDenominator() * second.GetNumerator());
-  res.SetDenominator(first.GetDenominator() * second.GetDenominator());
-  first = res;
+  first = first + second;
   return first;
 }
 
 Rational& operator-=(Rational& first, const Rational& second) {
-  Rational res;
-  res.SetNumerator(first.GetNumerator() * second.GetDenominator() - first.GetDenominator() * second.GetNumerator());
-  res.SetDenominator(first.GetDenominator() * second.GetDenominator());
-  first = res;
+  first = first - second;
   return first;
 }
 
 Rational& operator*=(Rational& first, const Rational& second) {
-  Rational res;
-  res.SetNumerator(first.GetNumerator() * second.GetNumerator());
-  res.SetDenominator(first.GetDenominator() * second.GetDenominator());
-  first = res;
+  first = first * second;
   return first;
 }
 
 Rational& operator/=(Rational& first, const Rational& second) {
-  if (second.GetNumerator() == 0) {
-    throw RationalDivisionByZero();
-  }
-
-  Rational res;
-  res.SetNumerator(first.GetNumerator() * second.GetDenominator());
-  res.SetDenominator(first.GetDenominator() * second.GetNumerator());
-  first = res;
+  first = first / second;
   return first;
 }
 
