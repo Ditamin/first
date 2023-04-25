@@ -5,50 +5,52 @@
 #define REVERSE_RANGE_IMPLEMENTED
 
 class Range {
- public:
+public:
   explicit Range(int end) : end_(end) {
     Check();
   }
+
   Range(int begin, int end) : begin_(begin), end_(end) {
     Check();
   }
+
   Range(int begin, int end, int step) : begin_(begin), end_(end), step_(step) {
     Check();
   }
 
   class Iterator {
-   public:
-    explicit Iterator(int begin, int end, int step) : it_(begin), end_(end), step_(step) {
+  public:
+    explicit Iterator(int begin, int end, int step) : iter_(begin), end_(end), step_(step) {
     }
     Iterator(const Iterator& other) = default;
 
     Iterator& operator++() {
-      it_ += step_;
+      iter_ += step_;
       return *this;
     }
 
     Iterator operator++(int) {
-      return Iterator(it_ += step_, end_, step_);
+      return Iterator(iter_ += step_, end_, step_);
     }
 
     int operator->() {
-      return it_;
+      return iter_;
     }
 
     int& operator*() {
-      return it_;
+      return iter_;
     }
 
     bool operator!=(const Iterator& other) const {
-      if (step_ * (it_ - end_) > 0) {
+      if (step_ * (iter_ - end_) > 0) {
         return false;
       }
 
-      return it_ != other.it_;
+      return iter_ != other.iter_;
     }
 
-   private:
-    int it_;
+  private:
+    int iter_;
     int end_;
     int step_;
   };
@@ -62,39 +64,39 @@ class Range {
   }
 
   class ReverseIterator {
-   public:
-    explicit ReverseIterator(int begin, int end, int step) : it_(begin), end_(end), step_(step) {
+  public:
+    explicit ReverseIterator(int begin, int end, int step) : iter_(begin), end_(end), step_(step) {
     }
 
     ReverseIterator(const ReverseIterator& other) = default;
 
     ReverseIterator& operator++() {
-      it_ += step_;
+      iter_ += step_;
       return *this;
     }
 
     ReverseIterator operator++(int) {
-      return ReverseIterator(it_ += step_, end_, step_);
+      return ReverseIterator(iter_ += step_, end_, step_);
     }
 
     int operator->() {
-      return it_;
+      return iter_;
     }
 
     int& operator*() {
-      return it_;
+      return iter_;
     }
 
     bool operator!=(const ReverseIterator& other) const {
-      if (step_ * (it_ - end_) > 0) {
+      if (step_ * (iter_ - end_) > 0) {
         return false;
       }
 
-      return it_ != other.it_;
+      return iter_ != other.iter_;
     }
 
-   private:
-    int it_;
+  private:
+    int iter_;
     int end_;
     int step_;
   };
@@ -117,7 +119,7 @@ class Range {
     return ReverseIterator(begin_ - reverse, begin_, step_);
   }
 
- private:
+private:
   int begin_ = 0;
   int end_;
   int step_ = 1;
