@@ -18,26 +18,27 @@ int Strcmp(const char* first, const char* second) {
 int Strncmp(const char* first, const char* second, size_t count) {
   size_t first_len = std::min(Strlen(first), count);
   size_t second_len = std::min(Strlen(second), count);
+  int res = 0;
 
   if (first_len > second_len) {
-    return 1;
+    res = 1;
   }
 
   if (first_len < second_len) {
-    return -1;
+    res = -1;
   }
 
   for (size_t i = 0; i < first_len; ++i) {
     if (first[i] > second[i]) {
-      return 1;
+      res = 1;
     }
 
     if (first[i] < second[i]) {
-      return -1;
+      res -1;
     }
   }
 
-  return 0;
+  return res;
 }
 
 char* Strcpy(char* dest, const char* src) {
@@ -72,27 +73,29 @@ char* Strncat(char* dest, const char* src, size_t count) {
 
 const char* Strchr(const char* str, char symbol) {
   size_t len = Strlen(str), i;
+  const char* res = nullptr;
 
   for (i = 0; i <= len; ++i) {
     if (str[i] == symbol) {
-      return &str[i];
+      res = &str[i];
     }
   }
 
-  return nullptr;
+  return res;
 }
 
 const char* Strrchr(const char* str, char symbol) {
   int i;
   size_t len = Strlen(str);
+  const char* res = nullptr;
 
   for (i = len; i >= 0; --i) {
     if (str[i] == symbol) {
-      return &str[i];
+      res = &str[i];
     }
   }
 
-  return nullptr;
+  return res;
 }
 
 size_t Strspn(const char* dest, const char* src) {
@@ -117,19 +120,21 @@ size_t Strcspn(const char* dest, const char* src) {
 
 const char* Strpbrk(const char* dest, const char* breakset) {
   size_t len = Strlen(dest);
+  const char* res = nullptr;
 
   for (size_t i = 0; i < len; ++i) {
     if (Strchr(breakset, dest[i])) {
-      return &dest[i];
+      res = &dest[i];
     }
   }
 
-  return nullptr;
+  return res;
 }
 
 const char* Strstr(const char* str, const char* pattern) {
   int len_str = Strlen(str);
   int len_pattern = Strlen(pattern);
+  const char* res = nullptr;
 
   for (int i = 0; i <= len_str - len_pattern; ++i) {
     bool equal = true;
@@ -142,9 +147,9 @@ const char* Strstr(const char* str, const char* pattern) {
     }
 
     if (equal) {
-      return &str[i];
+      res = &str[i];
     }
   }
 
-  return nullptr;
+  return res;
 }
