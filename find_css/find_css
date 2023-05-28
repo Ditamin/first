@@ -8,6 +8,7 @@ class Vertex {
   Vertex() = default;
   explicit Vertex(size_t idx) : idx(idx) {
   }
+  
   size_t idx;
   Color color = White;
 };
