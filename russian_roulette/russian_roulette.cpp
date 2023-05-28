@@ -1,5 +1,4 @@
 #include <iostream>
-#include <cstring>
 #include <vector>
 
 int FindPrefix(const std::string& s, std::vector<int>& prefix, int k, char a) {
