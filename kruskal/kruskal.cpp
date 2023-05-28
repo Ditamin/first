@@ -8,6 +8,7 @@ class SDS {
     parent_.resize(n, -1);
     rank_.resize(n, 1);
   }
+ 
   int FindSet(int idx);
   void Union(int first, int second);
 
@@ -20,6 +21,7 @@ class Edge {
  public:
   Edge(int begin, int end, int weight) : begin(begin), end(end), weight(weight) {
   }
+ 
   bool operator<(const Edge& other) const {
     return weight < other.weight;
   }
