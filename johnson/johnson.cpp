@@ -9,6 +9,7 @@ class Edge {
   bool operator<(const Edge& other) const {
     return weight > other.weight;
   }
+ 
   int begin;
   int end;
   int weight;
