@@ -7,6 +7,7 @@ class Edge {
  public:
   Edge(size_t end, size_t weight) : end(end), weight(weight) {
   }
+ 
   bool operator<(const Edge& other) const {
     return weight > other.weight;
   }
