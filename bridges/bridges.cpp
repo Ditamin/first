@@ -12,6 +12,7 @@ class Edge {
   bool operator<(const Edge& other) const {
     return end < other.end;
   }
+ 
   bool operator==(const Edge& other) const {
     return end == other.end;
   }
