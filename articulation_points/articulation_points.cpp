@@ -9,6 +9,7 @@ class Vertex {
   Vertex() = default;
   explicit Vertex(size_t idx) : idx(idx) {
   }
+ 
   bool operator<(const Vertex& other) const {
     return idx < other.idx;
   }
