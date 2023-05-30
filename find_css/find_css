@@ -1,0 +1,127 @@
+#include <iostream>
+#include <vector>
+
+enum Color { White, Grey, Black };
+
+class Vertex {
+ public:
+  Vertex() = default;
+  explicit Vertex(size_t idx) : idx(idx) {
+  }
+  
+  size_t idx;
+  Color color = White;
+};
+
+class OrGraph {
+ public:
+  void TopSort();
+  void FindSCC();
+  friend std::istream& operator>>(std::istream& is, OrGraph& graph);
+
+ private:
+  void TopSortDFS(std::vector<Color>& color, Vertex& cur);
+  void DFS(Vertex& cur, size_t k);
+  OrGraph Transposition() const;
+
+  std::vector<std::vector<size_t>> neighbours_;
+  std::vector<Vertex> vertexs_;
+  std::vector<size_t> top_sorted_;
+  std::vector<size_t> scc_;
+};
+
+std::istream& operator>>(std::istream& is, OrGraph& graph) {
+  size_t n, m;
+  is >> n >> m;
+  graph.neighbours_.resize(n);
+  graph.vertexs_.resize(n);
+
+  for (size_t i = 0; i < n; ++i) {
+    graph.vertexs_[i].idx = i;
+  }
+
+  for (size_t i = 0; i < m; ++i) {
+    size_t st, en;
+    is >> st >> en;
+    graph.neighbours_[--st].push_back(--en);
+  }
+
+  return is;
+}
+
+void OrGraph::TopSortDFS(std::vector<Color>& color, Vertex& cur) {
+  color[cur.idx] = Grey;
+
+  for (auto i : neighbours_[cur.idx]) {
+    if (color[i] == White) {
+      TopSortDFS(color, vertexs_[i]);
+    }
+  }
+
+  color[cur.idx] = Black;
+  top_sorted_.push_back(cur.idx);
+}
+
+void OrGraph::TopSort() {
+  std::vector<Color> color(vertexs_.size(), White);
+
+  for (size_t i = 0; i < vertexs_.size(); ++i) {
+    if (color[i] == White) {
+      TopSortDFS(color, vertexs_[i]);
+    }
+  }
+}
+
+OrGraph OrGraph::Transposition() const {
+  OrGraph copy;
+  copy.vertexs_.resize(vertexs_.size());
+  copy.neighbours_.resize(vertexs_.size());
+  copy.scc_.resize(vertexs_.size());
+
+  for (size_t i = 0; i < vertexs_.size(); ++i) {
+    copy.vertexs_[i].idx = i;
+
+    for (size_t j = 0; j < neighbours_[i].size(); ++j) {
+      copy.neighbours_[neighbours_[i][j]].push_back(i);
+    }
+  }
+
+  return copy;
+}
+
+void OrGraph::DFS(Vertex& cur, size_t k) {
+  cur.color = Grey;
+  scc_[cur.idx] = k;
+
+  for (auto v : neighbours_[cur.idx]) {
+    if (vertexs_[v].color == White) {
+      DFS(vertexs_[v], k);
+    }
+  }
+
+  cur.color = Black;
+}
+
+void OrGraph::FindSCC() {
+  TopSort();
+  int k = 0;
+  OrGraph transposed = Transposition();
+
+  for (int i = top_sorted_.size() - 1; i >= 0; --i) {
+    if (transposed.vertexs_[top_sorted_[i]].color == White) {
+      transposed.DFS(transposed.vertexs_[top_sorted_[i]], ++k);
+    }
+  }
+
+  std::cout << k << "\n";
+
+  for (auto i : transposed.scc_) {
+    std::cout << i << " ";
+  }
+}
+
+int main() {
+  OrGraph graph;
+  std::cin >> graph;
+  graph.FindSCC();
+}
